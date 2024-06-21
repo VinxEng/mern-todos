@@ -1,32 +1,29 @@
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
+import cors from "cors";
 import express from "express";
+import mongoose from "mongoose";
+import router from "./routes/todo.routes.js";
+
 const app = express();
+// const corsOptions = {
+// 	origin: "http://localhost:5173", //*
+// 	methods: ["GET", "POST", "PUT", "DELETE"],
+// 	allowedHeaders: ["Content-Type", "Authorization"],
+// 	credentials: true,
+// };
+
+// Middleware
 app.use(express.json());
-
-import router from "./routes.js";
-import connectToMongoDB from "./database.js";
-
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use("/api", router);
 
 const port = process.env.PORT || 5000;
-
-/**
- * Khởi chạy Server
- */
-async function startServer() {
-	try {
-		await connectToMongoDB();
+mongoose
+	.connect(process.env.MONGODB_URI)
+	.then(() => {
 		app.listen(port, () => {
 			console.log(`Server is listening on http://localhost:${port}`);
 		});
-	} catch (e) {
-		console.error(`Index.js ~~~ Unable to get database.collection: ${e}`);
-	}
-
-	// await connectToMongoDB();
-	// app.listen(port, () => {
-	// 	console.log(`Server is listening on http://localhost:${port}`);
-	// });
-}
-startServer();
+	})
+	.catch((err) => console.log(`Unable to get database collection: ${err}`));

@@ -1,54 +1,31 @@
-export default function Todo(props) {
-	const { todo, setTodos } = props;
+import axios from "axios";
+import React from "react";
+import { AiFillEdit } from "react-icons/ai";
+import { RxCross1 } from "react-icons/rx";
+import { baseURL } from "../constant";
 
-	const updateTodo = async (todoId, todoStatus) => {
-		const res = await fetch(`/api/todos/${todoId}`, {
-			method: "PUT",
-			body: JSON.stringify({ completed: todoStatus }),
-			headers: {
-				"Content-Type": "application/json",
-			},
+const ToDo = ({ text, id, setUpdateUI, setShowPopup, setPopupContent }) => {
+	const deleteTodo = () => {
+		axios.delete(`${baseURL}/todos/${id}`).then((res) => {
+			console.log(res.data);
+			setUpdateUI((prevState) => !prevState);
 		});
-
-		const json = await res.json();
-		if (json.acknowledged) {
-			setTodos((currentTodos) => {
-				return currentTodos.map((currentTodo) => {
-					if (currentTodo._id === todoId) {
-						return { ...currentTodo, completed: !currentTodo.status };
-					}
-					return currentTodo;
-				});
-			});
-		}
 	};
 
-	const deleteTodo = async (todoId) => {
-		const res = await fetch(`/api/todos/${todoId}`, {
-			method: "DELETE",
-		});
-		const json = await res.json();
-		if (json.acknowledged) {
-			setTodos((currentTodos) => {
-				return currentTodos.filter((currentTodo) => currentTodo._id !== todoId);
-			});
-		}
+	const updateToDo = () => {
+		setPopupContent({ text, id });
+		setShowPopup(true);
 	};
 
 	return (
-		<div className="todo">
-			<p>{todo.todo}</p>
-			<div className="mutations">
-				<button
-					className="todo__status"
-					onClick={() => updateTodo(todo._id, todo.status)}
-				>
-					{todo.status ? "☑" : "☐"}
-				</button>
-				<button className="todo__delete" onClick={() => deleteTodo(todo._id)}>
-					🗑️
-				</button>
+		<div className="toDo">
+			{text}
+			<div className="icons">
+				<AiFillEdit className="icon" onClick={updateToDo} />
+				<RxCross1 className="icon" onClick={deleteTodo} />
 			</div>
 		</div>
 	);
-}
+};
+
+export default ToDo;

@@ -1,164 +1,131 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap");
-
-/* CSS RESET */
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-}
-
 * {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	margin: 0;
+	padding: 0;
 }
 
 body {
-	line-height: 1.5;
-	-webkit-font-smoothing: antialiased;
+	background-color: #252525;
+	color: #fff;
 }
-
-img,
-picture,
-video,
-canvas,
-svg {
-	display: block;
-	max-width: 100%;
-}
-
-input,
-button,
-textarea,
-select {
-	font: inherit;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	overflow-wrap: break-word;
-}
-
-/* APP */
-
-body {
-	background-color: #07000d;
-	background-image: url("https://www.transparenttextures.com/patterns/cartographer.png");
-	color: white;
-	font-family: "Rubik", sans-serif;
-}
-
-/* container */
 
 .container {
-	max-width: 1200px;
 	margin: 0 auto;
+	max-width: fit-content;
 }
-
-/* todos list */
 
 .title {
 	text-align: center;
 	font-size: 3rem;
-	padding: 3rem 0 1rem;
 }
 
-.todos {
+.input_holder {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+input,
+button {
+	padding: 10px 20px;
+	background-color: #696969;
+	color: #fff;
+	outline: none;
+	border: none;
+}
+
+input {
+	width: 200px;
+}
+
+input::placeholder {
+	color: #fff;
+}
+
+button:hover {
+	cursor: pointer;
+	background-color: #4d4d4d;
+}
+
+.list {
+	margin-top: 20px;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 1rem;
+	gap: 20px;
 }
 
-.todo {
+.toDo {
+	background-color: #696969;
+	padding: 10px 20px;
 	display: flex;
 	justify-content: space-between;
-	padding: 1rem 1.25rem;
-
-	background-color: rgba(255, 255, 255, 0.1);
-	width: 50%;
-	font-size: 1.4rem;
-	border-radius: 1rem;
-	transition: all 0.2s;
-
-	&:hover {
-		background-color: rgba(255, 255, 255, 0.2);
-	}
+	align-items: center;
 }
 
-.mutations {
+.icons {
 	display: flex;
-	gap: 0.75rem;
+	gap: 10px;
 }
 
-.todo__status,
-.todo__delete {
-	border: none;
-	padding: 0;
-	line-height: 1;
+.icon:hover {
 	cursor: pointer;
-	transition: all 0.2s;
-	background: none;
-	color: white;
-	font-size: 1.6rem;
-
-	&:hover {
-		transform: scale(1.15);
-	}
+	color: #cfcfcf;
 }
 
-.todo__status {
-	font-size: 1.75rem;
+.backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background-color: #0000006c;
+	display: grid;
+	place-items: center;
 }
 
-/* form */
-.form {
+.popup {
+	position: relative;
+	background-color: #696969;
+	width: 400px;
+	padding: 10px;
+}
+
+.cross {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 10px;
+	cursor: pointer;
+}
+
+.cross:hover {
+	color: #c4c4c4;
+}
+
+.popup h1 {
+	text-align: center;
+	font-weight: 500;
+}
+
+.popup__input_holder {
+	margin-top: 30px;
 	display: flex;
-	gap: 0.5rem;
-	width: 50%;
-	margin: 1rem auto;
+	justify-content: center;
+	gap: 10px;
+	padding-bottom: 30px;
 }
 
-.form__input {
-	flex: 1;
-	padding: 0.5rem 0.75rem;
-	border-radius: 0.25rem;
-	border: none;
-	outline: none;
-
-	&:focus,
-	&:hover {
-		background-color: rgba(255, 255, 255, 0.85);
-	}
+.popup__input_holder input,
+.popup__input_holder button {
+	background-color: #fff;
+	color: #000;
 }
 
-.form__button {
-	border: none;
-	background-color: rgba(113, 0, 212, 0.7);
-	cursor: pointer;
-	color: white;
-	border-radius: 0.25rem;
-	transition: all 0.2s;
-
-	&:hover {
-		background-color: rgba(95, 0, 179, 0.5);
-	}
+.popup__input_holder input::placeholder {
+	color: #383838;
 }
 
-@media (max-width: 420px) {
-	.title {
-		font-size: 2.5rem;
-	}
-
-	.form {
-		width: 95%;
-	}
-
-	.todo {
-		width: 95%;
-		font-size: 1.2rem;
-	}
+.popup__input_holder button:hover {
+	background-color: #c4c4c4;
 }

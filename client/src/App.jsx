@@ -1,104 +1,69 @@
 import { useEffect, useState } from "react";
-import Todo from "./Todo";
+import ToDo from "./Todo";
+import Popup from "./Popup";
+import axios from "axios";
+import { baseURL } from "../constant";
 
 export default function App() {
-	const [todos, setTodos] = useState([]);
-	const [content, setContent] = useState("");
-	const [error, setError] = useState(null);
+	const [toDos, setToDos] = useState([]);
+	const [input, setInput] = useState("");
+	const [updateUI, setUpdateUI] = useState(false);
+	const [showPopup, setShowPopup] = useState(false);
+	const [popupContent, setPopupContent] = useState({});
 
 	useEffect(() => {
-		async function getTodos() {
-			const res = await fetch("/api/todos");
+		axios
+			.get(`${baseURL}/todos`)
+			.then((res) => setToDos(res.data))
+			.catch((err) => console.log(err));
+	}, [updateUI]);
 
-			// if (!res.ok) {
-			// 	throw new Error("Network response was not ok");
-			// }
-			const todos = await res.json();
-			setTodos(todos);
-		}
-		getTodos();
-	}, []);
-
-	// useEffect(() => {
-	// 	async function getTodos() {
-	// 		try {
-	// 			const res = await fetch("/api/todos");
-	// 			// console.log(res);
-	// 			const data = await res.text(); // Fetch response as text
-	// 			// console.log(data);
-	// 			const data2 = await res.json();
-	// 			console.log(data2);
-	// 			// Check if the response is valid JSON before parsing
-	// 			if (res.headers.get("Content-Type")?.includes("application/json")) {
-	// 				const parsedData = JSON.parse(data);
-	// 				setTodos(parsedData.msg); // Assuming "msg" is the key for todos
-	// 				console.log(parsedData.msg);
-	// 			} else {
-	// 				setError(
-	// 					"Đã nhận được định dạng phản hồi không mong đợi. Vui lòng kiểm tra máy chủ."
-	// 				);
-	// 			}
-	// 		} catch (error) {
-	// 			setError(error);
-	// 		}
-
-	// 		// const res = await fetch("/api/todos");
-	// 		// const data = await res.json();
-	// 		// console.log(data.msg);
-	// 	}
-	// 	getTodos();
-	// }, []);
-
-	const createNewTodo = async (e) => {
-		e.preventDefault();
-		if (content.length > 3) {
-			const res = await fetch("/api/todos", {
-				method: "POST",
-				body: JSON.stringify({ title: content }),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			const newTodo = await res.json();
-
-			setContent("");
-			setTodos([...todos, newTodo]);
-		}
+	const saveToDo = () => {
+		axios
+			.post(`${baseURL}/todos`, { toDo: input })
+			.then((res) => {
+				console.log(res.data);
+				setUpdateUI((prevState) => !prevState);
+				setInput("");
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (
-		<main className="container">
-			<h1 className="title">Awesome Todos</h1>
-			<form className="form" onSubmit={createNewTodo}>
-				<input
-					type="text"
-					value={content}
-					onChange={(e) => setContent(e.target.value)}
-					placeholder="Enter a new todo..."
-					className="form__input"
-					required
-				/>
-				<button className="form__button" type="submit">
-					Create Todo
-				</button>
-			</form>
-			{/* {error !== null ? (
-				<div className="todos">{error}</div>
-			) : (
-				<div className="todos">
-					{todos.length > 0 &&
-						todos.map((todo) => (
-							<Todo key={todo._id} todo={todo} setTodos={setTodos} />
-						))}
-				</div>
-			)} */}
+		<main>
+			<div className="container">
+				<h1 className="title">ToDo App</h1>
 
-			<div className="todos">
-				{todos.length > 0 &&
-					todos.map((todo) => (
-						<Todo key={todo._id} todo={todo} setTodos={setTodos} />
+				<div className="input_holder">
+					<input
+						value={input}
+						onChange={(e) => setInput(e.target.value)}
+						type="text"
+						placeholder="Add Todos..."
+					/>
+					<button onClick={saveToDo}>Add</button>
+				</div>
+
+				<div className="list">
+					{toDos.map((el) => (
+						<ToDo
+							key={el._id}
+							text={el.toDo}
+							id={el._id}
+							setUpdateUI={setUpdateUI}
+							setShowPopup={setShowPopup}
+							setPopupContent={setPopupContent}
+						/>
 					))}
+				</div>
 			</div>
+			{showPopup && (
+				<Popup
+					setShowPopup={setShowPopup}
+					popupContent={popupContent}
+					setUpdateUI={setUpdateUI}
+				/>
+			)}
 		</main>
 	);
 }
